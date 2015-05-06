@@ -190,8 +190,49 @@ module Vanity
       metric(id).track!(count)
     end
 
+<<<<<<< HEAD
     # Returns the experiment. You may not have guessed, but this method raises
     # an exception if it cannot load the experiment's definition.
+=======
+    # Determines if a user has seen one the variations
+    def saw_variation_for_experiment(name)
+      # get the unique identity of a user
+      identity = experiment(name).get_identity()
+      # deterimine if the identity has been assigned a variation
+      # if they haven't been assigned a variation then they never saw one
+      connection.ab_assigned(name, identity)
+    end
+
+    def get_saw_variation_time(name)
+      # get the unique identity of a user
+      identity = experiment(name).get_identity()
+      connection.get_saw_variation_time(name, identity)
+    end
+
+    # -- Connection management --
+
+    # This is the preferred way to programmatically create a new connection (or
+    # switch to a new connection). If no connection was established, the
+    # playground will create a new one by calling this method with no arguments.
+    #
+    # With no argument, uses the connection specified in config/vanity.yml file
+    # for the current environment (RACK_ENV, RAILS_ENV or development). If there
+    # is no config/vanity.yml file, picks the configuration from
+    # config/redis.yml, or defaults to Redis on localhost, port 6379.
+    #
+    # If the argument is a symbol, uses the connection specified in
+    # config/vanity.yml for that environment. For example:
+    #   Vanity.playground.establish_connection :production
+    #
+    # If the argument is a string, it is processed as a URL. For example:
+    #   Vanity.playground.establish_connection "redis://redis.local/5"
+    #
+    # Otherwise, the argument is a hash and specifies the adapter name and any
+    # additional options understood by that adapter (as with config/vanity.yml).
+    # For example:
+    #   Vanity.playground.establish_connection :adapter=>:redis,
+    #                                          :host=>"redis.local"
+>>>>>>> added saw_variation_for_experiment method
     #
     # @see Vanity::Experiment
     # @deprecated

@@ -198,6 +198,10 @@ module Vanity
         end
       end
 
+      def get_identity()
+        return identity()
+      end
+
 
       # -- Reporting --
 
