@@ -34,6 +34,7 @@ module Vanity
     #   end
     # @since 1.2.0
     def ab_test(name, &block)
+      warn("This is the name of the test: #{name}")
       # TODO refactor with Vanity::Rails::Helpers#ab_test
       request = respond_to?(:request) ? self.request : nil
       if Vanity.playground.using_js?

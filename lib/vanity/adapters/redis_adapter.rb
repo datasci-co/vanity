@@ -29,10 +29,14 @@ module Vanity
       attr_reader :redis
 
       def initialize(options)
-        @options = options.clone
-        @options[:db] ||= @options[:database] || (@options[:path] && @options.delete(:path).split("/")[1].to_i)
-        @options[:thread_safe] = true
-        connect!
+        begin
+          @options = options.clone
+          @options[:db] ||= @options[:database] || (@options[:path] && @options.delete(:path).split("/")[1].to_i)
+          @options[:thread_safe] = true
+          connect!
+        rescue Exception => e
+          warn("Error1: #{e.message}")
+        end
       end
 
       def active?
@@ -56,10 +60,14 @@ module Vanity
       end
 
       def connect!
-        @redis = @options[:redis] || Redis.new(@options)
-        @metrics = Redis::Namespace.new("vanity:metrics", :redis=>redis)
-        @experiments = Redis::Namespace.new("vanity:experiments", :redis=>redis)
-        @variation_timestamps = Redis::Namespace.new("vanity:variation_timestamps", :redis=>redis)
+        begin
+          @redis = @options[:redis] || Redis.new(@options)
+          @metrics = Redis::Namespace.new("vanity:metrics", :redis=>redis)
+          @experiments = Redis::Namespace.new("vanity:experiments", :redis=>redis)
+          @variation_timestamps = Redis::Namespace.new("vanity:variation_timestamps", :redis=>redis)
+        rescue Exception => e
+          warn("Error2: #{e.message}")
+        end
       end
 
       def to_s
@@ -104,7 +112,11 @@ module Vanity
 
       def set_experiment_created_at(experiment, time)
         call_redis_with_failover do
-          @experiments.setnx "#{experiment}:created_at", time.to_i
+          begin
+            @experiments.setnx "#{experiment}:created_at", time.to_i
+          rescue Exception => e
+            warn("Error1: #{e.message}")
+          end
         end
       end
 
