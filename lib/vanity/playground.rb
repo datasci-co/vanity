@@ -195,18 +195,26 @@ module Vanity
     # an exception if it cannot load the experiment's definition.
 =======
     # Determines if a user has seen one the variations
-    def saw_variation_for_experiment(name)
-      # get the unique identity of a user
-      identity = experiment(name).get_identity()
+    def saw_variation_for_experiment(name, identity = nil)
+      identity = set_identity(name, identity)
       # deterimine if the identity has been assigned a variation
       # if they haven't been assigned a variation then they never saw one
       connection.ab_assigned(name, identity)
     end
 
-    def get_saw_variation_time(name)
-      # get the unique identity of a user
-      identity = experiment(name).get_identity()
+    def get_saw_variation_time(name, identity)
+      identity = set_identity(name, identity)
       connection.get_saw_variation_time(name, identity)
+    end
+
+    def get_variation(name, identity)
+      identity = set_identity(name, identity)
+      variation = connection.ab_assigned(name, identity)
+      if variation.nil?
+        return nil
+      else
+        return experiment(name).alternatives[variation].value.to_s
+      end
     end
 
     # -- Connection management --
@@ -295,5 +303,60 @@ module Vanity
     def reconnect!
       Vanity.reconnect!
     end
+<<<<<<< HEAD
+=======
+
+    protected
+
+    def autoconnect(options, arguments)
+      if options[:redis]
+        @adapter = RedisAdapter.new(:redis=>options[:redis])
+      else
+        connection_spec = arguments.shift || options[:connection]
+        if connection_spec
+          connection_spec = "redis://" + connection_spec unless connection_spec[/^\w+:/]
+          establish_connection connection_spec
+        else
+          establish_connection
+        end
+      end
+    end
+
+    def set_identity(name, identity)
+      if identity.nil?
+        identity = experiment(name).get_identity()
+      end
+      return identity
+    end
+  end
+
+  # In the case of Rails, use the Rails logger and collect only for
+  # production environment by default.
+  class << self
+
+    # The playground instance.
+    #
+    # @see Vanity::Playground
+    attr_accessor :playground
+    def playground
+      # In the case of Rails, use the Rails logger and collect only for
+      # production environment by default.
+      @playground ||= Playground.new(:rails=>defined?(::Rails))
+    end
+
+    # Returns the Vanity context. For example, when using Rails this would be
+    # the current controller, which can be used to get/set the vanity identity.
+    def context
+      Thread.current[:vanity_context]
+    end
+
+    # Sets the Vanity context. For example, when using Rails this would be
+    # set by the set_vanity_context before filter (via Vanity::Rails#use_vanity).
+    def context=(context)
+      Thread.current[:vanity_context] = context
+    end
+
+
+>>>>>>> add ability to ab test for multiple possible user identities
   end
 end

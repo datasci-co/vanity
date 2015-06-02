@@ -466,8 +466,16 @@ module Vanity
       # Called via a hook by the associated metric.
       def track!(metric_id, timestamp, count, *args)
         return unless active?
+<<<<<<< HEAD
         identity = args.last[:identity] if args.last.is_a?(Hash)
         identity ||= identity() rescue nil
+=======
+        identity = args[0].values_at(:identity)[0] rescue nil
+        if identity.nil?
+          identity = identity() rescue nil
+        end
+        identity ||= args.last[:identity] if args.last.is_a?(Hash) && args.last[:identity]
+>>>>>>> add ability to ab test for multiple possible user identities
         if identity
           return if connection.ab_showing(@id, identity)
           index = alternative_for(identity)

@@ -68,12 +68,15 @@ module Vanity
     end
 
     # Determines if a user has seen one the variations
-    def saw_variation_for_experiment(name)
-      return Vanity.playground.saw_variation_for_experiment(name).nil? ? false : true
+    def saw_variation_for_experiment(name, identity)
+      return (!Vanity.playground.saw_variation_for_experiment(name).nil? || !Vanity.playground.saw_variation_for_experiment(name, identity).nil?) ? true : false
     end
 
-    def get_saw_variation_time(name)
-      return Vanity.playground.get_saw_variation_time(name)
+    def get_variation_info(name, identity = nil)
+      dict = {}
+      dict["variation"] = Vanity.playground.get_variation(name, identity) || Vanity.playground.get_variation(name, nil)
+      dict["time"] = Vanity.playground.get_saw_variation_time(name,identity) || Vanity.playground.get_saw_variation_time(name, nil)
+      return dict
     end
   end
 end
