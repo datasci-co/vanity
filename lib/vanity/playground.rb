@@ -300,8 +300,6 @@ module Vanity
     def reconnect!
       Vanity.reconnect!
     end
-<<<<<<< HEAD
-=======
 
     protected
 
@@ -352,8 +350,5 @@ module Vanity
     def context=(context)
       Thread.current[:vanity_context] = context
     end
-
-
->>>>>>> add ability to ab test for multiple possible user identities
   end
 end
