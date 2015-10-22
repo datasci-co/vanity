@@ -190,10 +190,6 @@ module Vanity
       metric(id).track!(count)
     end
 
-<<<<<<< HEAD
-    # Returns the experiment. You may not have guessed, but this method raises
-    # an exception if it cannot load the experiment's definition.
-=======
     # Determines if a user has seen one the variations
     def saw_variation_for_experiment(name, identity = nil)
       identity = set_identity(name, identity)
@@ -240,7 +236,8 @@ module Vanity
     # For example:
     #   Vanity.playground.establish_connection :adapter=>:redis,
     #                                          :host=>"redis.local"
->>>>>>> added saw_variation_for_experiment method
+    # Returns the experiment. You may not have guessed, but this method raises
+    # an exception if it cannot load the experiment's definition.
     #
     # @see Vanity::Experiment
     # @deprecated
