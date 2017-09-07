@@ -79,10 +79,10 @@ module Vanity
           end
         end
         protected :vanity_identity
-        around_filter :vanity_context_filter
-        before_filter :vanity_reload_filter unless ::Rails.configuration.cache_classes
-        before_filter :vanity_query_parameter_filter
-        after_filter :vanity_track_filter
+        around_action :vanity_context_filter
+        before_action :vanity_reload_filter unless ::Rails.configuration.cache_classes
+        before_action :vanity_query_parameter_filter
+        after_action :vanity_track_filter
       end
       protected :use_vanity
     end
